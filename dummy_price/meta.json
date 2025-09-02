@@ -1,1 +1,0 @@
-{"features": ["Year", "Month", "Day", "Night", "DayLimit", "NightLimit", "StationEncoded", "DayExcess", "NightExcess", "MeanExcess", "Price_per_SqFt", "Price_in_Lakhs"], "target": "Price_in_Lakhs"}
