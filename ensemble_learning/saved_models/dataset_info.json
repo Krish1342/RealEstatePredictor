@@ -1,0 +1,14 @@
+{
+  "original_shape": [
+    21386,
+    81
+  ],
+  "processed_shape": [
+    18472,
+    81
+  ],
+  "target_column": "target_price",
+  "feature_count": 80,
+  "train_test_split": "14777 / 3695",
+  "outliers_removed": 2914
+}
