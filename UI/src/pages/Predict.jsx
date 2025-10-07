@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import FreeMapComponent from '../components/FreeMapComponent';
+import FreeLocationSearch from '../components/FreeLocationSearch';
+import FactorImportance from '../components/FactorImportance';
+import WhatIfScenarios from '../components/WhatIfScenarios';
+import POIDisplay from '../components/POIDisplay';
 
 const Predict = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +23,10 @@ const Predict = () => {
   
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const [showFactors, setShowFactors] = useState(false);
+  const [scenarioImpact, setScenarioImpact] = useState(null);
+  const [showAmenities, setShowAmenities] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,6 +34,18 @@ const Predict = () => {
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleLocationChange = (value) => {
+    setFormData(prev => ({
+      ...prev,
+      location: value
+    }));
+    setSelectedLocation(value);
+  };
+
+  const handleLocationSelect = (suggestion) => {
+    setSelectedLocation(suggestion);
   };
 
   const handleCheckboxChange = (e) => {
@@ -36,6 +57,10 @@ const Predict = () => {
         [name]: checked
       }
     }));
+  };
+
+  const handleScenarioChange = (scenario) => {
+    setScenarioImpact(scenario);
   };
 
   const handleSubmit = (e) => {
@@ -51,8 +76,10 @@ const Predict = () => {
           'Good location',
           'Low crime rate',
           'Excellent air quality',
-          'Good water quality'
-        ]
+          'Good water quality',
+          'Proximity to amenities'
+        ],
+        location: formData.location
       });
       setLoading(false);
     }, 2500);
@@ -64,7 +91,8 @@ const Predict = () => {
         <h2 className="text-3xl font-bold text-center mb-4">Predict Property Price</h2>
         <p className="text-gray-600 text-center max-w-2xl mx-auto mb-12">Our advanced algorithm analyzes multiple factors to provide accurate property valuation</p>
         
-        <div className="grid md:grid-cols-2 gap-10">
+        <div className="grid lg:grid-cols-2 gap-10">
+          {/* Left Column - Form */}
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -74,16 +102,12 @@ const Predict = () => {
             <form onSubmit={handleSubmit}>
               <div className="mb-6">
                 <label className="block text-gray-700 mb-2 font-medium" htmlFor="location">Location</label>
-                <input 
-                  type="text" 
-                  id="location" 
-                  name="location"
+                <FreeLocationSearch
                   value={formData.location}
-                  onChange={handleChange}
-                  className="input-field w-full px-5 py-4" 
-                  placeholder="e.g., Bangalore, Indiranagar" 
-                  required
+                  onChange={handleLocationChange}
+                  onLocationSelect={handleLocationSelect}
                 />
+                <p className="text-xs text-gray-500 mt-1">Start typing to see location suggestions</p>
               </div>
               
               <div className="grid grid-cols-2 gap-6 mb-6">
@@ -95,7 +119,7 @@ const Predict = () => {
                     name="area"
                     value={formData.area}
                     onChange={handleChange}
-                    className="input-field w-full px-5 py-4" 
+                    className="input-field w-full px-4 py-3" 
                     placeholder="e.g., 1500" 
                     required
                   />
@@ -107,7 +131,7 @@ const Predict = () => {
                     name="bedrooms"
                     value={formData.bedrooms}
                     onChange={handleChange}
-                    className="input-field w-full px-5 py-4"
+                    className="input-field w-full px-4 py-3"
                     required
                   >
                     <option value="">Select</option>
@@ -128,7 +152,7 @@ const Predict = () => {
                     name="bathrooms"
                     value={formData.bathrooms}
                     onChange={handleChange}
-                    className="input-field w-full px-5 py-4"
+                    className="input-field w-full px-4 py-3"
                     required
                   >
                     <option value="">Select</option>
@@ -146,7 +170,7 @@ const Predict = () => {
                     name="age"
                     value={formData.age}
                     onChange={handleChange}
-                    className="input-field w-full px-5 py-4" 
+                    className="input-field w-full px-4 py-3" 
                     placeholder="e.g., 5" 
                     required
                   />
@@ -154,7 +178,7 @@ const Predict = () => {
               </div>
               
               <div className="mb-8">
-                <label className="block text-gray-700 mb-2 font-medium">Amenities</label>
+                <label className="block text-gray-700 mb-2 font-medium">Property Amenities</label>
                 <div className="grid grid-cols-2 gap-4">
                   <label className="flex items-center">
                     <input 
@@ -218,14 +242,58 @@ const Predict = () => {
             </form>
           </motion.div>
           
+          {/* Right Column - Results & Features */}
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex flex-col justify-center"
+            className="space-y-6"
           >
+            {/* Map Section */}
+            <div className="bg-white rounded-2xl shadow-xl p-6">
+              <h3 className="text-xl font-bold text-gray-800 mb-4">Property Location</h3>
+              <FreeMapComponent 
+                location={selectedLocation} 
+                height="300px"
+              />
+              {selectedLocation && (
+                <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                  <div className="flex items-center">
+                    <i className="fas fa-map-marker-alt text-blue-500 mr-2"></i>
+                    <p className="text-sm text-blue-700">
+                      Location: <span className="font-medium">{selectedLocation}</span>
+                    </p>
+                  </div>
+                  <p className="text-xs text-blue-600 mt-1">
+                    <i className="fas fa-info-circle mr-1"></i>
+                    Interactive map powered by OpenStreetMap
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* POI Display Section */}
+            {selectedLocation && (
+              <div className="bg-white rounded-2xl shadow-xl p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-xl font-bold text-gray-800">Nearby Amenities</h3>
+                  <button
+                    onClick={() => setShowAmenities(!showAmenities)}
+                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition"
+                  >
+                    {showAmenities ? 'Hide Amenities' : 'Show Amenities'}
+                  </button>
+                </div>
+                <POIDisplay location={selectedLocation} isVisible={showAmenities} />
+              </div>
+            )}
+
+            {/* Factor Importance */}
+            <FactorImportance isVisible={showFactors} />
+
+            {/* Prediction Result */}
             {loading ? (
-              <div className="result-card p-8 mb-8 text-center fade-in">
+              <div className="result-card p-8 text-center fade-in">
                 <div className="text-center py-8">
                   <div className="loading-dots mb-4">
                     <span></span>
@@ -237,9 +305,29 @@ const Predict = () => {
                 </div>
               </div>
             ) : prediction ? (
-              <div className="result-card p-8 mb-8 text-center fade-in">
+              <div className="result-card p-8 text-center fade-in">
+                <button
+                  onClick={() => setShowFactors(!showFactors)}
+                  className="mb-4 px-4 py-2 bg-white bg-opacity-20 rounded-lg text-white font-medium hover:bg-opacity-30 transition"
+                >
+                  {showFactors ? 'Hide Analysis' : 'Show Price Factors'}
+                </button>
+                
                 <h3 className="text-2xl font-bold mb-4">Predicted Property Value</h3>
-                <div className="text-4xl font-bold mb-4">{prediction.price}</div>
+                <div className="text-4xl font-bold mb-4">
+                  {scenarioImpact ? 
+                    `₹${Math.round(7250000 * 1.15)}` : // Demo calculation
+                    prediction.price
+                  }
+                </div>
+                {scenarioImpact && (
+                  <div className="mb-4 p-3 bg-yellow-500 bg-opacity-20 rounded-lg">
+                    <p className="text-yellow-200 text-sm">
+                      <i className="fas fa-lightbulb mr-1"></i>
+                      With {scenarioImpact.title}: +{scenarioImpact.impact}
+                    </p>
+                  </div>
+                )}
                 <div className="price-badge inline-block text-sm font-semibold">{prediction.accuracy} Accuracy</div>
                 <div className="mt-6">
                   <h4 className="font-medium mb-3">Key Positive Factors</h4>
@@ -256,7 +344,7 @@ const Predict = () => {
                 </div>
               </div>
             ) : (
-              <div className="result-card p-8 mb-8 text-center fade-in">
+              <div className="result-card p-8 text-center fade-in">
                 <div className="flex flex-col items-center justify-center h-64 text-center">
                   <div className="mb-4 p-3 bg-indigo-100 rounded-full bg-opacity-20">
                     <i className="fas fa-home text-white text-4xl"></i>
@@ -266,7 +354,16 @@ const Predict = () => {
                 </div>
               </div>
             )}
+
+            {/* What-If Scenarios */}
+            {prediction && !loading && (
+              <WhatIfScenarios 
+                currentPrediction={prediction}
+                onScenarioChange={handleScenarioChange}
+              />
+            )}
             
+            {/* Factors Considered */}
             <div className="bg-white rounded-2xl p-6 shadow-lg">
               <h4 className="font-bold text-lg mb-4">Factors Considered</h4>
               <ul className="space-y-3">
@@ -293,6 +390,18 @@ const Predict = () => {
                     <i className="fas fa-check"></i>
                   </div>
                   <span>Water Quality</span>
+                </li>
+                <li className="flex items-center">
+                  <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 mr-3">
+                    <i className="fas fa-check"></i>
+                  </div>
+                  <span>Location & Neighborhood</span>
+                </li>
+                <li className="flex items-center">
+                  <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 mr-3">
+                    <i className="fas fa-check"></i>
+                  </div>
+                  <span>Nearby Amenities & Facilities</span>
                 </li>
               </ul>
             </div>

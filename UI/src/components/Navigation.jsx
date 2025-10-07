@@ -15,6 +15,7 @@ const Navigation = ({ isLoggedIn, onLogout }) => {
           <Link to="/predict" className="text-gray-600 hover:text-indigo-600 font-medium">Predict</Link>
           <Link to="/about" className="text-gray-600 hover:text-indigo-600 font-medium">About</Link>
           <Link to="/contact" className="text-gray-600 hover:text-indigo-600 font-medium">Contact</Link>
+          <Link to="/compare" className="text-gray-600 hover:text-indigo-600 font-medium">Compare</Link>
         </div>
         
         <div>
