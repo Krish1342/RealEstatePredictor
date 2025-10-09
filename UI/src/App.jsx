@@ -9,6 +9,7 @@ import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Footer from './components/Footer';
+import Compare from './pages/Compare';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -57,6 +58,9 @@ function App() {
           <Route 
             path="/contact" 
             element={isLoggedIn ? <Contact /> : <Navigate to="/login" />} 
+          />
+          <Route path="/compare" 
+          element={isLoggedIn ? <Compare /> : <Navigate to="/login" />} 
           />
         </Routes>
         {isLoggedIn && <Footer />}
