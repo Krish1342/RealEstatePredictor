@@ -1,88 +1,29 @@
 @echo off
-echo ==============================================
-echo   Real Estate Predictor - Full Stack Setup
-echo ==============================================
+echo ================================================
+echo   Real Estate Price Predictor - Full System
+echo ================================================
+echo.
+echo Starting Backend and Frontend servers...
 echo.
 
-:: Check if Python is installed
-python --version >nul 2>&1
-if errorlevel 1 (
-    echo ❌ Python is not installed or not in PATH
-    echo Please install Python 3.8 or higher
-    pause
-    exit /b 1
-)
+REM Start Backend in new window
+start "Backend Server" cmd /k "cd /d %~dp0 && start_backend.bat"
 
-:: Check if Node.js is installed
-node --version >nul 2>&1
-if errorlevel 1 (
-    echo ❌ Node.js is not installed or not in PATH
-    echo Please install Node.js 16 or higher
-    pause
-    exit /b 1
-)
+REM Wait 5 seconds for backend to start
+timeout /t 5 /nobreak
 
-echo ✅ Python and Node.js are available
-echo.
-
-:: Setup Backend
-echo 🔧 Setting up FastAPI Backend...
-cd backend
-if not exist "venv" (
-    echo Creating Python virtual environment...
-    python -m venv venv
-)
-
-echo Activating virtual environment...
-call venv\Scripts\activate.bat
-
-echo Installing Python dependencies...
-pip install -r requirements.txt
-
-if errorlevel 1 (
-    echo ❌ Failed to install Python dependencies
-    pause
-    exit /b 1
-)
-
-echo ✅ Backend dependencies installed
-echo.
-
-:: Setup Frontend
-echo 🔧 Setting up React Frontend...
-cd ..\UI
-
-echo Installing Node.js dependencies...
-npm install
-
-if errorlevel 1 (
-    echo ❌ Failed to install Node.js dependencies
-    pause
-    exit /b 1
-)
-
-echo ✅ Frontend dependencies installed
-echo.
-
-:: Start services
-echo 🚀 Starting Real Estate Predictor...
-echo.
-echo Starting FastAPI backend on port 8000...
-start "FastAPI Backend" cmd /k "cd /d %~dp0backend && venv\Scripts\activate && python start_server.py"
-
-timeout /t 3 /nobreak >nul
-
-echo Starting React frontend on port 3000...
-start "React Frontend" cmd /k "cd /d %~dp0UI && npm run dev"
+REM Start Frontend in new window
+start "Frontend Server" cmd /k "cd /d %~dp0 && start_frontend.bat"
 
 echo.
-echo ==============================================
-echo   🎉 Real Estate Predictor Started!
-echo ==============================================
+echo ================================================
+echo   Servers are starting in separate windows
+echo ================================================
+echo   Backend API: http://localhost:8000
+echo   API Docs: http://localhost:8000/docs
+echo   Frontend: http://localhost:5173
+echo ================================================
 echo.
-echo 📡 Backend API: http://localhost:8000
-echo 📊 API Docs: http://localhost:8000/docs
-echo 🖥️  Frontend: http://localhost:5173
-echo.
-echo Press any key to close this window...
-pause >nul
+echo Close this window when done.
+echo Press any key to exit this launcher...
+pause > nul

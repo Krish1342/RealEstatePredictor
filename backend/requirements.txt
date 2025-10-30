@@ -1,18 +1,21 @@
-# Core FastAPI and web framework
-fastapi>=0.104.1
-uvicorn>=0.24.0
+# FastAPI Backend Requirements
+# Real Estate Price Predictor
 
-# Data processing and ML (using compatible versions)
-pandas>=2.0.0,<2.4.0
-numpy>=1.24.0,<2.0.0
-scikit-learn>=1.0.0
-joblib>=1.0.0
+# Core Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+python-multipart==0.0.6
 
-# Optional ML libraries (install separately if needed)
-# xgboost>=2.0.0
-# lightgbm>=4.0.0
+# Machine Learning
+scikit-learn==1.3.2
+xgboost==2.0.2
+lightgbm==4.1.0
+joblib==1.3.2
+
+# Data Processing
+pandas==2.1.3
+numpy==1.26.2
 
 # Utilities
-python-dotenv>=1.0.0
-pydantic>=2.5.0
-typing-extensions>=4.8.0
+python-dotenv==1.0.0
